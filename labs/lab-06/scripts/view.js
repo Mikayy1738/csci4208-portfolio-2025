@@ -1,10 +1,15 @@
 import Question from './components/Questions.js';
 import HUD from './components/HUD.js';
 import Skip from './components/Skip.js';
+import Leaderboard from './components/Leaderboard.js';
+import LeaderMenu from './components/LeaderMenu.js';
+
 const renderDOM = (html) => document.getElementById('view').innerHTML = html;
 
+const isTop5 = (score, top5) => top5.some( item => item.score < score );
+
 export const PlayScene = (props) => {
-    const {timer, score, trivia} = props;
+    const {trivia, timer, score} = props;
     renderDOM(
         `${HUD(timer, score)}
         ${Question(trivia)}
@@ -12,12 +17,22 @@ export const PlayScene = (props) => {
     )
 }
 
-export const GameroverScene = (props) => {
-    const {timer, score, trivia} = props;
+export const GameoverScene = (props) => {
+    const {timer, score, topScores} = props;
     renderDOM(
         `${HUD(timer, score)}
-        <h1> Game Over! </h1>
-        <button onClick='start()'>Start Menu</button>
-        `
+        ${ isTop5( score, topScores) ? LeaderMenu() : '' }
+        <h1>Game Over!</h1>
+        <button onclick='start()'>Start Menu</button>`
+    )
+}
+
+export const StartMenu = (props) => {
+    const {timer, score, topScores} = props;
+    renderDOM(
+        `${ HUD(timer,score) }
+        ${ Leaderboard(topScores) }
+        <hr>
+        <button onclick='createGame()'>Play</button>`
     )
 }
